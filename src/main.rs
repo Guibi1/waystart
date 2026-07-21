@@ -98,18 +98,15 @@ pub fn open_window(cx: &mut App, waystart: Entity<Waystart>) -> WindowHandle<Way
     let bounds = Bounds::centered(None, size(px(800.), px(500.)), cx);
     cx.open_window(
         WindowOptions {
-            // #[cfg(target_os = "linux")]
-            // kind: WindowKind::LayerShell(gpui::layer_shell::LayerShellOptions {
-            //     namespace: "waystart".to_string(),
-            //     anchor: gpui::layer_shell::Anchor::LEFT
-            //         | gpui::layer_shell::Anchor::RIGHT
-            //         | gpui::layer_shell::Anchor::BOTTOM
-            //         | gpui::layer_shell::Anchor::TOP,
-            //     margin: Some((px(0.), px(0.), px(40.), px(0.))),
-            //     keyboard_interactivity: gpui::layer_shell::KeyboardInteractivity::Exclusive,
-            //     ..Default::default()
-            // }),
-            // #[cfg(not(target_os = "linux"))]
+            #[cfg(target_os = "linux")]
+            kind: WindowKind::LayerShell(gpui::layer_shell::LayerShellOptions {
+                namespace: "waystart".to_string(),
+                anchor: gpui::layer_shell::Anchor::all(),
+                margin: None,
+                keyboard_interactivity: gpui::layer_shell::KeyboardInteractivity::Exclusive,
+                ..Default::default()
+            }),
+            #[cfg(not(target_os = "linux"))]
             kind: WindowKind::PopUp,
             is_resizable: false,
             is_minimizable: false,
