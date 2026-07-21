@@ -5,7 +5,10 @@ xflags! {
 
     /// A start menu for Wayland-based window managers.
     cmd waystart {
-        default cmd standalone {}
+        default cmd standalone {
+            /// Do not try to connect to the daemon.
+            optional -f, --force
+        }
 
         /// Start the Waystart daemon.
         cmd daemon {
@@ -42,7 +45,9 @@ pub enum WaystartCmd {
 }
 
 #[derive(Debug)]
-pub struct Standalone;
+pub struct Standalone {
+    pub force: bool,
+}
 
 #[derive(Debug)]
 pub struct Daemon {

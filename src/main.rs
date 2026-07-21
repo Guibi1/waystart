@@ -25,8 +25,10 @@ fn main() {
         cli::WaystartCmd::Open(_) => SocketMessage::Open,
         cli::WaystartCmd::Close(_) => SocketMessage::Close,
         cli::WaystartCmd::Toggle(_) => SocketMessage::Toggle,
-        cli::WaystartCmd::Standalone(_) => {
-            if let Ok(client) = SocketClient::try_connect() {
+        cli::WaystartCmd::Standalone(options) => {
+            if !options.force
+                && let Ok(client) = SocketClient::try_connect()
+            {
                 client.send_message_socket(SocketMessage::Open);
                 return;
             } else {
