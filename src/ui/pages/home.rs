@@ -74,7 +74,7 @@ impl Render for HomePage {
             .peekable();
 
         div()
-            .flex_grow()
+            .flex_grow_1()
             .flex()
             .flex_col()
             .gap_1()
@@ -127,7 +127,7 @@ impl Render for HomePage {
                     }),
                 )
                 .track_scroll(&self.list_scroll_handle)
-                .flex_grow()
+                .flex_grow_1()
                 .pb_2(),
             )
     }

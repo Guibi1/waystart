@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use gpui::{
-    AnyElement, App, AppContext, Bounds, Context, Corner, DismissEvent, DispatchPhase, Element,
+    Anchor, AnyElement, App, AppContext, Bounds, Context, DismissEvent, DispatchPhase, Element,
     ElementId, Entity, EventEmitter, FocusHandle, Focusable, GlobalElementId, Hitbox,
     InteractiveElement as _, IntoElement, KeyBinding, LayoutId, ManagedView, MouseButton,
     MouseDownEvent, ParentElement, Pixels, Refineable, Render, SharedString,
@@ -191,7 +191,7 @@ type ItemAction = dyn Fn(&mut Window, &mut App);
 pub struct Dropdown<M: ManagedView> {
     id: ElementId,
 
-    anchor: Corner,
+    anchor: Anchor,
     trigger: Option<AnyElement>,
     content_builder: Option<Rc<ContentBuilder<M>>>,
 }
@@ -204,13 +204,13 @@ where
     pub fn new(id: impl Into<ElementId>) -> Self {
         Self {
             id: id.into(),
-            anchor: Corner::TopLeft,
+            anchor: Anchor::TopLeft,
             trigger: None,
             content_builder: None,
         }
     }
 
-    pub fn anchor(mut self, anchor: Corner) -> Self {
+    pub fn anchor(mut self, anchor: Anchor) -> Self {
         self.anchor = anchor;
         self
     }
@@ -308,52 +308,61 @@ impl<M: ManagedView> Element for Dropdown<M> {
             window,
             cx,
             |view: &mut Dropdown<M>, element_state, window, cx| {
-                let popover = if let Some(content_view) =
-                    element_state.content_view.borrow_mut().as_mut()
-                {
-                    let popover = anchored()
-                        .snap_to_window_with_margin(px(8.))
-                        .anchor(match view.anchor {
-                            Corner::TopLeft => Corner::BottomLeft,
-                            Corner::TopRight => Corner::BottomRight,
-                            Corner::BottomLeft => Corner::TopLeft,
-                            Corner::BottomRight => Corner::TopRight,
-                        })
-                        .when_some(element_state.trigger_bounds, |anchored, trigger_bounds| {
-                            anchored.position(trigger_bounds.corner(view.anchor))
-                        })
-                        .child(
-                            div()
-                                .size_full()
-                                .occlude()
-                                .map(|this| match view.anchor {
-                                    Corner::TopLeft | Corner::TopRight => this.top_0p5(),
-                                    Corner::BottomLeft | Corner::BottomRight => this.bottom_0p5(),
-                                })
-                                .child(content_view.clone())
-                                .on_mouse_down_out({
-                                    let content_view = element_state.content_view.clone();
-                                    let previously_focused =
-                                        element_state.previously_focused.clone();
-                                    move |_, window, cx| {
-                                        cx.stop_propagation();
-                                        window.prevent_default();
-                                        if let Some(previous_focus_handle) =
-                                            previously_focused.borrow_mut().take()
-                                        {
-                                            window.focus(&previous_focus_handle, cx);
+                let popover =
+                    if let Some(content_view) = element_state.content_view.borrow_mut().as_mut() {
+                        let popover = anchored()
+                            .snap_to_window_with_margin(px(8.))
+                            .anchor(match view.anchor {
+                                Anchor::TopLeft => Anchor::BottomLeft,
+                                Anchor::TopRight => Anchor::BottomRight,
+                                Anchor::BottomLeft => Anchor::TopLeft,
+                                Anchor::BottomRight => Anchor::TopRight,
+                                Anchor::TopCenter => Anchor::BottomCenter,
+                                Anchor::BottomCenter => Anchor::TopCenter,
+                                Anchor::LeftCenter => Anchor::RightCenter,
+                                Anchor::RightCenter => Anchor::LeftCenter,
+                            })
+                            .when_some(element_state.trigger_bounds, |anchored, trigger_bounds| {
+                                anchored.position(trigger_bounds.corner(view.anchor))
+                            })
+                            .child(
+                                div()
+                                    .size_full()
+                                    .occlude()
+                                    .map(|this| match view.anchor {
+                                        Anchor::TopLeft | Anchor::TopCenter | Anchor::TopRight => {
+                                            this.top_0p5()
                                         }
-                                        *content_view.borrow_mut() = None;
-                                        window.refresh();
-                                    }
-                                }),
-                        );
-                    let mut element = deferred(popover).with_priority(1).into_any();
+                                        Anchor::BottomLeft
+                                        | Anchor::BottomCenter
+                                        | Anchor::BottomRight => this.bottom_0p5(),
+                                        Anchor::LeftCenter => this.left_0p5(),
+                                        Anchor::RightCenter => this.right_0p5(),
+                                    })
+                                    .child(content_view.clone())
+                                    .on_mouse_down_out({
+                                        let content_view = element_state.content_view.clone();
+                                        let previously_focused =
+                                            element_state.previously_focused.clone();
+                                        move |_, window, cx| {
+                                            cx.stop_propagation();
+                                            window.prevent_default();
+                                            if let Some(previous_focus_handle) =
+                                                previously_focused.borrow_mut().take()
+                                            {
+                                                window.focus(&previous_focus_handle, cx);
+                                            }
+                                            *content_view.borrow_mut() = None;
+                                            window.refresh();
+                                        }
+                                    }),
+                            );
+                        let mut element = deferred(popover).with_priority(1).into_any();
 
-                    Some((element.request_layout(window, cx), element))
-                } else {
-                    None
-                };
+                        Some((element.request_layout(window, cx), element))
+                    } else {
+                        None
+                    };
 
                 let trigger = {
                     let mut trigger_element = match view.trigger.take() {

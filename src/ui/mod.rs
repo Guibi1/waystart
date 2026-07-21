@@ -17,7 +17,6 @@ pub fn init(cx: &mut App) {
 
 #[derive(RustEmbed)]
 #[folder = "assets"]
-#[include = "**/*.svg"]
 pub struct Assets;
 
 impl AssetSource for Assets {

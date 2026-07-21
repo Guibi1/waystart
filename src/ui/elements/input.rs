@@ -637,7 +637,7 @@ impl Render for TextInput {
             .flex()
             .px_4()
             .py_3()
-            .flex_grow()
+            .flex_grow_1()
             .bg(config.theme.background)
             .text_lg()
             .cursor_text()

@@ -15,7 +15,7 @@ impl WifiManager {
             let nm = nm.clone();
             async move {
                 while let Ok((network, security)) = rx.recv().await {
-                    nm.connect(&network.ssid, security).await.ok();
+                    nm.connect(&network.ssid, None, security).await.ok();
                 }
             }
         })
@@ -25,15 +25,16 @@ impl WifiManager {
     }
 
     pub fn enabled(&self) -> bool {
-        smol::block_on(self.nm.wifi_enabled()).unwrap_or_default()
+        let state = smol::block_on(self.nm.wifi_state()).unwrap();
+        state.enabled || state.hardware_enabled
     }
 
     pub fn enable(&self, state: bool) -> nmrs::Result<()> {
-        smol::block_on(self.nm.set_wifi_enabled(state))
+        smol::block_on(self.nm.set_wireless_enabled(state))
     }
 
     pub fn list(&self) -> Vec<nmrs::Network> {
-        smol::block_on(self.nm.list_networks()).unwrap_or_default()
+        smol::block_on(self.nm.list_networks(None)).unwrap_or_default()
     }
 
     pub fn connect(&self, network: &nmrs::Network, security: nmrs::WifiSecurity) {

@@ -1,7 +1,8 @@
 use gpui::{
-    App, AppContext, Application, Bounds, Entity, Focusable, QuitMode, TitlebarOptions,
-    WindowBounds, WindowDecorations, WindowHandle, WindowKind, WindowOptions, point, px, size,
+    App, AppContext, Bounds, Entity, Focusable, QuitMode, TitlebarOptions, WindowBounds,
+    WindowDecorations, WindowHandle, WindowKind, WindowOptions, point, px, size,
 };
+use gpui_platform::application;
 
 use crate::config::Config;
 use crate::finder::Finders;
@@ -51,7 +52,7 @@ fn main() {
 }
 
 fn create_app(daemon: bool) {
-    Application::new()
+    application()
         .with_assets(ui::Assets)
         .with_quit_mode(if daemon {
             QuitMode::Explicit

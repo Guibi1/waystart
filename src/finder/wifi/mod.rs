@@ -49,7 +49,7 @@ impl Finder for WifiFinder {
                             nucleo_matcher::Utf32String::from(entry.network.ssid.clone()).slice(..),
                             matcher,
                         )
-                        .map(|score| entry.clone() as Rc<dyn Entry>)
+                        .map(|_score| entry.clone() as Rc<dyn Entry>)
                 })
                 .collect(),
         )

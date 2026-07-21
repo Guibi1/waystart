@@ -1,5 +1,5 @@
 use gpui::{
-    App, Corner, InteractiveElement, IntoElement, ParentElement, RenderOnce, Styled, Window, div,
+    Anchor, App, InteractiveElement, IntoElement, ParentElement, RenderOnce, Styled, Window, div,
 };
 
 use crate::config::Config;
@@ -37,7 +37,7 @@ impl RenderOnce for WifiQuickAccess {
         };
 
         Dropdown::new("quick-wifi")
-            .anchor(Corner::TopRight)
+            .anchor(Anchor::TopRight)
             .trigger(
                 div()
                     .size_8()

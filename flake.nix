@@ -32,7 +32,8 @@
           };
           strictDeps = true;
 
-          buildInputs = with pkgs; [ makeWrapper libxkbcommon ];
+          nativeBuildInputs = [ pkg-config makeWrapper ];
+          buildInputs = [ fontconfig libxkbcommon ];
         };
 
         cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
@@ -62,7 +63,7 @@
         devShells.default = craneLib.devShell {
           checks = self.checks.${system};
 
-          packages = with pkgs; [ libxkbcommon ];
+          packages = with pkgs; [ pkg-config fontconfig libxkbcommon ];
           LD_LIBRARY_PATH = libPath;
         };
       }

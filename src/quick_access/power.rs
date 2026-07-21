@@ -1,7 +1,7 @@
 use std::process::Command;
 
 use gpui::{
-    App, Corner, InteractiveElement, IntoElement, ParentElement, RenderOnce, Styled, Window, div,
+    Anchor, App, InteractiveElement, IntoElement, ParentElement, RenderOnce, Styled, Window, div,
 };
 
 use crate::config::Config;
@@ -28,7 +28,7 @@ impl RenderOnce for PowerQuickAccess {
         let config = cx.global::<Config>();
 
         Dropdown::new("quick-power")
-            .anchor(Corner::TopRight)
+            .anchor(Anchor::TopRight)
             .trigger(
                 div()
                     .size_8()
