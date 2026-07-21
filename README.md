@@ -9,6 +9,19 @@ A fast start menu for Wayland-based window managers.
 - Simple configuration
 - Power menu and other goodies
 
+## Installation
+
+You can try out Waystart using nix:
+
+```bash
+nix run github:guibi1/waystart
+```
+
+To install Waystart, add this repo to your flake or install using `nix-env`:
+```bash
+nix profile add github:guibi1/waystart
+```
+
 ## Usage
 
 WayStart can be run in several modes:
