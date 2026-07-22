@@ -3,8 +3,24 @@ use gpui::{App, Resource, SharedString, Window};
 use crate::finder::Entry;
 
 pub struct MathEntry {
-    pub result: evalexpr::Value,
-    pub text: SharedString,
+    text: SharedString,
+    result: SharedString,
+}
+
+impl MathEntry {
+    pub fn result(quantity: calc::Quantity) -> Self {
+        Self {
+            text: format!("= {}", quantity).into(),
+            result: quantity.to_string().into(),
+        }
+    }
+
+    pub fn error(err: calc::CalcError) -> Self {
+        Self {
+            text: err.to_string().into(),
+            result: err.to_string().into(),
+        }
+    }
 }
 
 impl Entry for MathEntry {

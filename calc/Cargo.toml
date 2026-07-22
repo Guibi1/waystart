@@ -1,0 +1,8 @@
+[package]
+name = "calc"
+version = "0.1.0"
+edition = "2024"
+description = "Math expression and unit conversion evaluator, Raycast-style"
+
+[dependencies]
+nucleo-matcher = "0.3.1"
