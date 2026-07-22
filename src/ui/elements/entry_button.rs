@@ -37,7 +37,9 @@ impl RenderOnce for EntryButton {
         div()
             .flex()
             .items_center()
+            .gap_4()
             .rounded_lg()
+            .text_overflow(TextOverflow::Truncate("...".into()))
             .when_else(
                 self.favorite,
                 |this| {
@@ -49,29 +51,28 @@ impl RenderOnce for EntryButton {
                         .text_overflow(TextOverflow::Truncate("...".into()))
                         .hover(|this| this.bg(config.theme.muted))
                 },
-                |this| this.w_full().px_4().h_12(),
+                |this| this.w_full().h_12().px_4(),
             )
             .when_some(self.entry.icon(), |this, icon| {
                 this.child(
-                    img(ImageSource::Resource(icon.clone()))
+                    img(ImageSource::Resource(icon))
+                        .flex_shrink_0()
                         .size_7()
-                        .mr_4()
                         .object_fit(ObjectFit::Contain),
                 )
             })
-            .child(self.entry.text().clone())
+            .child(div().flex_grow_1().child(self.entry.text()))
             .when(self.selected, |this| {
                 this.bg(config.theme.muted).when_some(
                     self.entry.description(),
                     |this, description| {
                         this.child(
                             div()
-                                .flex()
+                                .flex_shrink_1()
+                                .text_sm()
                                 .text_color(config.theme.muted_foreground)
-                                .when(self.selected, |this| this.bg(config.theme.muted))
                                 .text_overflow(TextOverflow::Truncate("...".into()))
-                                .when(!self.favorite, |this| this.child(" — "))
-                                .child(description.clone()),
+                                .child(description),
                         )
                     },
                 )

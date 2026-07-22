@@ -37,7 +37,7 @@
         };
 
         cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-          pname = "waystart-deps";
+          pname = "waystart";
         });
 
         waystartClippy = craneLib.cargoClippy (commonArgs // {
@@ -63,7 +63,7 @@
         devShells.default = craneLib.devShell {
           checks = self.checks.${system};
 
-          packages = with pkgs; [ pkg-config fontconfig libxkbcommon ];
+          packages = with pkgs; [ rust-analyzer pkg-config fontconfig libxkbcommon ];
           LD_LIBRARY_PATH = libPath;
         };
       }

@@ -33,7 +33,7 @@ impl HomePage {
             self.selected -= 1;
         };
         self.list_scroll_handle
-            .scroll_to_item(self.selected, ScrollStrategy::Top);
+            .scroll_to_item(self.selected, ScrollStrategy::Nearest);
         cx.notify();
     }
 
@@ -44,7 +44,7 @@ impl HomePage {
             self.selected += 1;
         };
         self.list_scroll_handle
-            .scroll_to_item(self.selected, ScrollStrategy::Top);
+            .scroll_to_item(self.selected, ScrollStrategy::Nearest);
         cx.notify();
     }
 

@@ -49,6 +49,7 @@ impl Waystart {
     pub fn reset_search(&mut self, cx: &mut Context<Self>) {
         self.search_bar
             .update(cx, |search_bar, _| search_bar.reset());
+        self.filter_results(cx);
     }
 
     fn filter_results(&mut self, cx: &mut Context<Self>) {
@@ -89,7 +90,7 @@ impl Render for Waystart {
             .bg(config.theme.background)
             .text_color(config.theme.foreground)
             .font_family(config.theme.font_family.clone())
-            .border_color(config.theme.border)
+            .border_color(config.theme.accent)
             .border_1()
             .rounded_lg()
             .overflow_hidden()

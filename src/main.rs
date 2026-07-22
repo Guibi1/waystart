@@ -81,6 +81,11 @@ fn create_app(daemon: bool) {
             .detach();
 
             let waystart = cx.new(Waystart::new);
+            cx.on_window_closed({
+                let waystart = waystart.clone();
+                move |cx, _| waystart.update(cx, |waystart, cx| waystart.reset_search(cx))
+            })
+            .detach();
 
             if daemon {
                 let server = SocketServer::new(cx.to_async(), waystart);
@@ -92,10 +97,6 @@ fn create_app(daemon: bool) {
 }
 
 pub fn open_window(cx: &mut App, waystart: Entity<Waystart>) -> WindowHandle<Waystart> {
-    cx.update_entity(&waystart, |waystart: &mut Waystart, cx| {
-        waystart.reset_search(cx)
-    });
-
     let bounds = Bounds::centered(None, size(px(800.), px(500.)), cx);
     cx.open_window(
         WindowOptions {
