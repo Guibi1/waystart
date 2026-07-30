@@ -67,5 +67,8 @@
           LD_LIBRARY_PATH = libPath;
         };
       }
-    );
+    )
+    // {
+      homeModules.default = import ./hm-module { inherit self; };
+    };
 }
